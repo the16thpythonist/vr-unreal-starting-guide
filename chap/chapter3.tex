@@ -1,0 +1,266 @@
+
+\section{The PH16 camera protocol}
+
+% Ich denke in dem ersten Kapitel hier sollte ich zunächst mal ein bisschen beschreiben 
+% wie man denn überhaupt mit der Phantom kommunizieren kann. Also wie man sich mit ihr 
+% verbinden kann und and welche Ports und sowieso man etwas schicken kann
+\subsection{Communication with the camera}
+The phantom camera v2640 provides two ethernet ports to communicate with a computer. One port supports the 1GB ethernet standard, the other port supports the 10G standard. Control commands, as well as image data can be transmitted using both ports. The 10G port however additionally supports a fast data transmission using raw ethernet frames instead of a managed TCP conversation, effectively minimizing transmission overhead. Thus the 10G connection is to be prefered when aiming for the highest possible data throughput.\cite{PhantomDatasheet} \par
+Each phantom camera comes shipped with a static IP address. This IP address is in the range 100.100.x.x for 1G connections and 172.16.x.x for the 10G port, where x is substituted with the product specific numerals. Consequently the the connected computer has to be configured to use the same IP range on the affected network card. It is recommended to assign the computer with the static IP 100.100.100.1 or 172.16.1.1 respectively.\cite{PhantomManual}\\
+If everything is configured correctly, a connection to the camera can be established via telnet. Using the default telnet port with the username \textit{user} and password \textit{user} will open a remote access console to the unix based operating system of the camera. Alternatively a TCP connection can be established to the port 7115. This ports accepts control commands of the PH16 protocol. The PH16 protocol is a custom network protocol developed by Vision research and used to communicate with phantom cameras. All further sections about the PH16 protocol are based on the given  protocol specification:\cite{PH16Protocol}
+
+% Ich denke ich sollte die cine structur vorher erkären bevor ich im nächsten 
+% Abschnitt in so gut wie jedem Satz das Wort "cine" erwähe und kein Leser eine 
+% Ahnung davon hat was ich meine.
+%\subsection{The cine structure}
+
+% Ich denke ich sollte mich bei den Strukturen nur auf die wichtigsten beziehen, die 
+% dann nachher auch relevant werden, damit die Liste nicht allzu lang wird.
+\subsection{Controlling camera behaviour}
+Configuring the behaviour of the camera is mainly done by setting according values to its internal properties. The internal unit structure is organized by having a set of top level structures, where each of them is separated into its own set of sub properties. The most relevant unit structures for the PH16 compliant camera models consist of the following:
+
+\begin{description}
+\item[info] General information about the camera configuration. This includes version numbers for hardware, firmware, sensor etc. for example as well as information about things like the resolution, maximum and minimum exposure time as well as frame rate.
+\item[hw] (Abbreviation for "hardware") Factory-adjusted calibration settings
+\item[c\#] The cine table. A cine is a special data format, developed by Vision Research, used to store recorded frames. Within the cameras internal memory a cine consists of a set of properties and the actual data storage. The properties describe the settings for the frame acquisition into this particular cine. The properties of a cine can be accessed through its indexed name. Each cine is named by the letter "c" followed by its index, such as "c1" for example. 
+\item[defc] (Abbreviation for "default cine") This structure contains general setting about the nature of a recording. The properties defined here will be copied to each individual cine, when it is created. The settings for each cine can be modified individually afterwards.
+\item[cam] Global settings for the camera, which aren't tied to a particular cine.
+\item[eth] Global settings about the ethernet interface, including the IP and port which the camera is operating on.
+\end{description}
+
+% Hier will ich nur den basic syntax ein bisschen anreißen. Also der Aufbau command 
+% und parameters und dann, was die camera darauf antwortet
+\subsection{Control commands}
+Active communication with the camera is performed by sending control commands in the form of strings to the TCP port 7115. The syntax of these strings consists of the command keyword, optionally followed by command parameters and terminated by the newline character "\textbackslash r\textbackslash n":
+% Shows the basic syntax composition for a control command
+\begin{lstlisting}
+"<command_name> <parameters> \r\n"
+\end{lstlisting}
+
+For every command the camera will send a response. If the command is purely of declarative nature, the camera will send the string "OK!". If, on the other hand, the command requests data from the camera a string containing this data will be sent as the response.\\
+In case the sent command is formed incorrectly or the described action is not applicable by the camera, it will send an error message instead. This error message is of the following format:
+\begin{lstlisting}
+"ERR: <explanatory_string>"
+\end{lstlisting}
+
+% Das sind denke ich die wichtigsten und einfachsten Kommandos. Also get und set
+% sollten auf jeden Fall mit dabei sein.
+\subsection{Getting and setting camera properties} \label{sec:phgetset}
+The most simple commands to interact with the camera are the \texttt{get} and \texttt{set} operations. These commands are used to manipulate the properties of camera to change it's behaviour in the future.\par
+The \texttt{get} command reads out the value of one or more properties. The command syntax consists of the keyword followed by the name of the property to be read. This property name could either be a specific property specified as "<top level structure>.<property>":
+\begin{lstlisting}
+get <property_name>
+\\ Example (exposure time)
+get defc.exp
+\end{lstlisting}
+The \texttt{set} command assigns a new value to one of the properties. It is important to keep in mind, that all properties can be read, but not all of them have write access. The set command can only be used on those properties that have been explicitly marked as r/w in the protocol specification. Trying to do otherwise will result in an error.\\
+The syntax consists of the keyword followed by the name of the property, specified in the same way as with the get command, and the new value to be assigned: 
+\begin{lstlisting}
+set <property_name> <value>
+\\ Example (exposure time)
+set defc.exp 100000
+\end{lstlisting}
+
+% Hier will ich erklären wie der Aufnahme Prozess funktioniert und weil das thematisch 
+% ganz gut zusammenpasst kann ich hier auch noch den trigger mit rein packen
+\subsection{Making a recording}
+To record an event with the camera, the first step is to set the camera into the recording state. This is achieved by using the \texttt{rec} command. The syntax is just the rec keyword followed by the cine number:
+\begin{lstlisting}
+rec <cine_number>
+// Example (recording into cine with index 1)
+rec 1
+\end{lstlisting}
+The cine number is the index of the cine partition of the internal memory into which the frames are supposed to be saved. After the \texttt{rec} command has been issued, the camera will start to capture frames and save them into the specified cine. For the capture process it will use the parameters, that are specified by the parameters of the "c1" property structure. This includes parameters such as exposure time, frame rate etc.\\
+The camera will continue to fill the internal memory until one of two things happens: 
+\begin{itemize}
+\item The cine memory partition does not have any more space for additional frames.
+\item A trigger event occurs within the camera. This trigger event can either originate from an actual electrical pulse to the trigger port of the camera or it could be a software trigger command.
+\end{itemize}
+
+A software trigger will be initiated by the \texttt{trig} command. The syntax of the command is just the trig keyword without any parameters. Once the trig command has been received by the camera it will simply simulate a hardware trigger.\\
+Once a trigger has occurred within the camera it will only record as many frames as previously specified in the \textit{post trigger frames} property (defc.ptframes). After this amount of frames, the camera will exit the recording state and wait for a new \texttt{rec} command.
+
+% Hier erkläre ich dann wie man Bilder ausliest also sowohl für 1G also auch für 10G
+% Das ist denke ich der wichtigste Teil des ganzen Kapitels, weil es den 
+% Grundstein legt für die spätere Erklärung, wie ich den Auslese Algorithmus gemacht 
+% habe.
+\subsection{Readout of image data} \label{sec:phreadout}
+After a recording has been made, the image data still has to be transferred from the internal memory of the camera to the computer for further processing. For this the camera provides two different commands:
+\begin{description}
+\item[img] The img command is the default way of transferring image data. It uses TCP sockets and is available both on the 1GB and the 10GB port. Due to the overhead of TCP communication this process is rather slow.
+\item[ximg] The ximg command can only be used on the 10G ethernet connection and is specifically designed for fast transfer. It uses raw ethernet frames to minimize overhead.
+\end{description}
+
+\paragraph{The IMG command}
+Using the \texttt{img} command, image data is not being sent over the control connection. The TCP connection established over port 7115 will always be reserved for just control commands. This means a secondary channel has to be opened for the data to be transmitted.\\
+The control connection is established by the computer. The computer has the role of a client and the camera the role of a server. All interactions are initiated by the computer: A request is being sent, to which the camera sends a response. For the data connection on the other hand, the camera is the main actor, which sends the data stream. Thus for the data connection the computer has to act as a server, which responds to the incoming data, while the camera initiates the transmission.\\
+To start such a secondary data connection, the \texttt{startdata} command has to be sent over the control connection first. The startdata command expects a port number as a parameter:
+\begin{lstlisting}
+startdata {port:<port_number>}
+// Example (start data connection on port 8999)
+startdata {port:8999}
+\end{lstlisting}
+After receiving this command the camera will attempt to open a TCP client socket to connect to the computer at the given port. For this a TCP server socket has to be running on the computer already, or else the command will result in an error. Only after this connection has been properly set up, subsequent \texttt{img} commands can succeed.\par
+The \texttt{img} command syntax expects the following parameters:
+\begin{description}
+\item[cine] The index of the cine from which to read the image. The value -1 is the special case of returning live images. This will work even if the camera has not recorded anything yet and the image will, whatever the camera "saw" in the moment, when the command got executed.
+\item[start] An integer number for the index of the frame \textit{within the chosen cine}, which is to be the first transmitted cine
+\item[cnt] An integer number of how many frames after the \textbf{start} frame are supposed to be transmitted.
+\item[fmt] A string identifier for the format in which the frames are supposed to be encoded for the transmission. The PH16 protocol offers a few different options where a single pixel is being encoded with 8, 10, 12 or 16 bit.  
+\end{description}
+\begin{lstlisting}
+img {cine:<cine_index>,start:<start_index>,
+	cnt:<frame_amount>,fmt:<format>}
+// Example (single live frame, 12 bit encoding )
+img {cine:-1,start:0,cnt:1,fmt:P12L}
+\end{lstlisting}
+Right after the img command has been received, the camera will start to send a byte stream over the data connection socket. The data does not contain any overhead. The first byte transmitted belongs to the first pixel of the first frame.\\
+As for the reconstruction on the computer side: The value for each pixel can be determined by reversing the encoding specified by "fmt". The list of the pixels can then be aligned into a 2 dimensional image matrix by using the resolution of the camera.
+
+\paragraph{The XIMG command}
+The \textit{ximg} command does not need an additional setting up step. The command expects the same parameters as the \textit{img} command, with the additional destination (dest) parameter:
+\begin{lstlisting}
+img {cine:<cine_index>,start:<start_index>,
+	cnt:<frame_amount>,fmt:<format>,dest:<destintation_mac>}
+// Example (single live frame, 12 bit encoding )
+img {cine:-1,start:0,cnt:1,fmt:P12L,dest:2fde67h6}
+\end{lstlisting}
+The destination parameter is supposed to contain the MAC address of the network card of the computer, which is used to maintain the 10G connection with the camera.\\
+Additionally the \texttt{ximg} command only supports a limited subset of transfer formats for the "fmt" parameter.\\
+After receiving the command, the image data of the specified images is simply to the ethernet connection as raw ethernet frames. Aside from the ethernet header, they will only contain the image bytes. This of course makes it necessary to have program running on the computer, which reads all the ethernet frames on the connection.
+[OPTIONAL: AN IMAGE OF HOW THE ETHERNET FRAME IS LAYED OUT]
+
+% Also mir ist aufgefallen, dass ich das discovery protocol auch noch erklären sollte, 
+% weil ich darauf bei dem architecture overview für die Mock einegehen will, wie viele 
+% Threads da gleichzeitig laufen müssen.
+\subsection{The discovery protocol}
+The PH16 protocol also supports a "discovery protocol". With the use of the discovery protocol the IP address of a specific camera model does not have to be know in advance. A computer can simply send a UDP broadcast message containing the string \texttt{"phantom?"}. If this UDP package has been sent to the network, to which a camera is also connected to, it will respond upon receiving it. The IP of the camera will then be know through the meta data of the UDP response package.
+
+% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% HIER FÄNGT DIE NEUE SECTION AN
+% Nachdem ich ja jetzt im letzten Kapitel einen Überblick über das Protokoll selber 
+% gegeben habe, sollte ich in diesem Teil PhantomCLI beschreiben. Ich denke was auf 
+% jeden Fall rein sollte ist: 1) Wie man es benutzt, 2) Wie die Mock aufgebaut ist. 
+% 3) Wie das main interface aufgebaut ist.
+\section{PhantomCLI - camera command line interface}
+% Hier sollte so eine Art Einleitung hin, also eine Erklärung, was ich mir gedacht 
+% habe und was mein Ziel damit war.
+Before working on the actual plugin, I wanted to get a better understanding of how the camera and the PH16 protocol worked. So I developed some command line utilities for testing and handy common operations.\\
+my initial goals were to implement at least a getting and setting of properties, the starting of recordings and the readout of images.\\
+Furthermore I wanted to build a simple \textit{mock} program of the camera. This was due to the fact, that I only had limited access to the actual camera and I did not wanted to limit all the testing of my code to these limited time frames. A simple simulation of the network behaviour of the camera would be enough for most situations.
+
+% Ich lasse diese Sektion erstmal aus, weil ich mir gerade nicht mal sicher bin, ob ich 
+% die überhaupt brauche. Weil ich meine ganz ehrlich, wer kennt Python nicht?
+\subsection{Used technologies} \label{sec:phantomcli_used_tech}
+
+\paragraph{Python}
+The \textit{PhantomCLI} project is written in the Python[CITATION] programming language. Python is a high-level programming language. It supports various programming paradigms such as imperative, functional and object oriented programming. It is an interpreted language, which makes it widely platform independent. Python is a general purpose programming language, with a big standard library and a rich ecosystem of third party libraries. Such libraries include various networking and command line frameworks, which will be needed by this project. Together with it's simple syntax, python offers a good foundation for rapid development.
+
+% Ich denke es macht durchaus Sinn einmal kurz zu erklären, wie PyPi funktioniert, 
+% damit man dann später in der section über das tatsächliche CLI einfach sagen kann
+% "installieren kann man es mit pip."
+\paragraph{PyPi - Python Package Index}
+PhantomCLI is being distributed, using the PyPi repository. The \textit{Python Packaging Index}[CITATION] is a software repository for the Python programming language. It has become the standard choice for distributing python libraries as well as applications. Once a program has been uploaded to PyPi it can be easily installed from the terminal, using the package management program \textit{pip}. For an installation with pip, only the name of a package has to be known:
+
+\begin{lstlisting}
+$ pip install package_name
+\end{lstlisting}
+
+All additional dependencies of any installed package will be automatically resolved. PyPi also supports semantic versioning and will keep all previously uploaded versions.
+
+\paragraph{Click}
+For its command line interface, PhantomCLI uses the \textit{Command Line Interface Creation Kit (click)}[CITATION] framework. Above all other Python CLI libraries click features a simple API by using the Python decorator syntax, while sill maintaining powerful customisation options.
+
+% Hier will ich beschreiben, wie die API des Programms ausssieht. Also wenn man
+% phantomcli jetzt zum Beispiel benutzen wollen würde als library, wie man dann von 
+% "außen" über die API mit der Kamera kommuniziert.
+\subsection{The socket API}
+The API\footnote{\textit{Application Programming Interface}. An API usually describes a simple set of actions or objects, exposed by a library. These exposed functions can be used to build an application on top of the library, while abstracting the underlying complexity.} of the \textit{PhantomCLI} library consists of a single class. The \texttt{PhantomSocket} class (figure \ref{fig:uml1}) can be instantiated to create a \texttt{PhantomSocket} object.
+% Das UML Diagramm für PhantomSocket
+\begin{figure}[h]
+	\caption[PhantomSocket UML]{UML Diagram for the PhantomSocket class}
+	\includegraphics[width=\linewidth]{../img/PhantomSocketUML.png} 
+	\label{fig:uml1}
+\end{figure}
+% Hier erkläre ich die Parameter für den Konstruktor
+% In der Auflistung fehlen noch ein paar parameter, aber ich weiß auch ganz ehrlich nicht 
+% ob man die noch unbedingt braucht...
+To create new \texttt{PhantomSocket} object the following parameters can be passed to the constructor:
+\begin{description}
+\item[ip] The required argument for the creation of a socket class is a string, which contains the IP address of the specific phantom camera to connect to.
+\item[timeout] The timeout specifies an integer time in seconds. After this time has passed and the TCP socket has not yet received a response to a previous request, the program will raise an exception. The default is 10 seconds.
+\item[data\_ip] A string containing the IP of the computer running the PhantomCLI program. This will be the IP, onto which the data server will be bound to while receiving image data. Default is localhost
+\item[data\_port] An integer port number. The data server, which will receive the image data, is going to be operating on this port. Thus this will have to be an otherwise unused port. Default is 7116
+\item[img\_format] A string containing the name of the format to be used to transmit the image data from the phantom to the computer. Default is \textit{P16}
+\item[network\_type] A string, which specifies the type of ethernet connection, which is used to connect to the phantom. The string "e" refers to a 1GB ethernet connection, while "x" is the 10GB connection.
+\end{description}
+% Hier erkläre ich was die einzelnen Methoden machen
+The \texttt{PhantomSocket} class provides the following public methods to interact with the phantom camera:
+\begin{description}
+\item[connect] After creating the object, it is not yet connected to the actual camera. By calling this method a new TCP socket will be created and connected to the camera.
+\item[disconnect] Closes the connection to the camera and deletes the network socket object.
+\item[get] Given the name of an internal structure, this method sends a \texttt{get} command to the camera and returns the response string.
+\item[set] Assigns a new value to one of the internal attributes of the camera
+\item[startdata] Creates a new threaded TCP Server object. Then it sends the \texttt{startdata} command to the phantom, so the camera can create a new data connection.
+\item[img] Sends the "img" command to the camera. The camera will then start to transmit the image data over the secondary data connection. This method blocks until the data server classifies the transmission as completed. Creates and returns a PhantomImage object from the data in the data server.
+\item[ping] Sends a ICMP ping to the IP address of the camera. Returns True, if the camera replied and False otherwise
+\item[discover] This static method will send a UDP broadcast message into the network. Returns a list of dictionary structures, where each dictionary contains the informations about a cameras name and IP address.
+\end{description}
+
+% Hier will ich reinschreiben, wie die Mock funktioniert.
+% Was das angeht denke ich, ich werde nicht undbedingt genau die Klassen beschreiben, 
+% sondern werde nur so obeerflächlich beschreiben, welche Threads alle gleichzeitig 
+% laufen müssen und wie der flow eines Handlings ist.
+% Am Ende vielleicht noch ein bisschen darauf eingehen, was noch nicht so 
+% funktioniert wie ich das haben will, bzw. wie es sein sollte.
+\subsection{The phantom Mock}
+The \texttt{PhantomCLI} project also provides a mock class \texttt{PhantomMockServer}. This mock server runs as a thread, so that once it is started, it's functionality will not block the program execution.\par 
+
+\paragraph{the thread structure}
+% Hier will ich erklären, wie die threaded server funktionieren. Also generell die Meta 
+% Struktur der Mock. welche Threads alle auf einmal laufen.
+The \texttt{PhantomMockServer} class inherits from the \texttt{ThreadedTCPServer} class of pythons standard library module \textit{socketserver}[CITATION]. Server classes from the socketserver module generally work by providing a method \texttt{serve\_forever}. Calling this method will be blocking the program execution, by making the internal socket continously listening for incoming connections. Once a connection has been established the server will create a new "Handler" class. The socket connection is then passed to this handler instance, while the server itself will continue listening for new incoming connections. The actual protocol specification has to be implemented within the handler class. The \textit{threaded} version of the Server class will run each newly created handler as a thread, so that the listening process is not interrupted.\par 
+Since the \texttt{server\_forever} method is blocking even for the threaded version of the server class, the \texttt{PhantomMockServer} creates an additional thread. This additional thread will run the \texttt{server\_forever} method. Thus calling the \texttt{start} method on the \texttt{PhantomMockServer} will not be blocking, as the listening loop is executed in a thread, as well as all future connections handlers.\par
+Additionally to the main socket handling, the \texttt{PhantomMockServer} starts and maintains two additional threads. The first one being an instance of the \texttt{PhantomDiscoveryServer}. This class inherits from the base class \texttt{ThreadedUDPServer} from the python module \textit{socketserver}. It creates a listening socket for incoming UDP packages. The corresponding handler class implements the phantom discovery protocol.\\ The second thread is an instance of the \texttt{PhantomCamera} class. This class simulates the actual camera behaviour. It contains the properties with which camera behaviour can be controlled. These properties can be read and modified. Additionally the camera object can simulate the start of a recording, a software trigger and the generation of frames. 
+
+[HIER MUSS NOCH EIN BILD REIN; WAS DAS ÜBERSICHTLICHER MACHT]
+
+\paragraph{command handling}
+% Hier könnte ich erklären wie die einzelnen commands dann tatsächlich gehandled werden
+Once the \texttt{PhantomMockServer} receives an incoming socket connection, this open connection is being passed to a handler object for further processing. This handler instance contains the implementation of the command handling. This includes the decision about which command has been received, executing this command and generating a reply.\par 
+At first the whole command string is being received and parsed. The parsing is being done by a parse tree, based on a custom grammer definition. The python package \textit{parsimonious}[CITATION] is being used for the definition of the PH16 protocol grammer.\\
+After the parsing process the command name of the request is used to call the specific handling method for that command. The parsed command parameters are passed as arguments to this method. Currently the following PH16 commands are supported by the mock:
+\begin{description}
+\item[get] Retrieves the value to the given property name from the simulated \texttt{PhantomCamera} and sends it as a response
+\item[set] Sets the new value to the property of the simulated \texttt{PhantomCamera}
+\item[startdata] Attempts to create a new TCP client connection at the given port.
+\item[img] Generates a new image from the \texttt{PhantomCamera} instance. Sends the raw image data through the data client.
+\item[ximg] Generates a new image from the \texttt{PhantomCamera} instance. Sends the raw image data as a ethernet frame to the network.
+\item[rec] Starts a recording on the simulated \texttt{PhantomCamera}. This will cause the camera to start generating frames with the set frame rate, until a software trigger stops occurs. 
+\item[trig] Issues a software trigger on the simulated \texttt{PhantomCamera}, which will 
+stop the recording after the acquisition of the post trigger frames.
+\end{description}
+[HIER MUSS NOCH EIN BILD REIN; WAS DAS ÜBERSICHTLICHER MACHT]
+
+\paragraph{Limits}
+% In einem letzten paragraphen dann noch die momentanen limitations
+In it's current state the mock of the phantom's behaviour supports the most basic functionality with the getting and setting of properties as well as the acquisition of frames. Working with this basic version will pose the following limits:\\
+On the one hand the mock does not even support all the commands of the PH16 protocol. The protocol defines many more commands, which include creation of user profiles, the transmission of timestamp meta data and manipulation of network settings among many others.\\
+On the other hand it does not accurately reflect camera behaviour. For example: The mock supports the start of a recording using the "rec" command, and a software trigger with "trig". This is a rather complex process in the actual camera. It includes the setting and changing of various properties and it affects various different cine partitions. The mock however currently only supports the acquisition of frames into a single, central list and the process does also not affect any properties.\\
+
+% In diesem Kapitel mache ich ein bisschen Werbung, bzw. ich erkläre wie man phantom cli 
+% einfach so von der Kommandozeile aus benutzt und verlinke auf meine Dokumentation
+\subsection{The command line interface}
+
+% Als erstes sollte hier eine Sektion hin, wie man das Programm installiert
+Aside from the API, the \textit{PhantomCLI} project also features a command line interface. The command line interface was designed to provide quick access to various common operations while dealing with the phantom camera.\\
+It can be installed by using \textit{pip}(sec.\ref{sec:phantomcli_used_tech}) to acquire the package "phantom-cli":
+
+\begin{lstlisting}
+$ pip install phantom-cli
+\end{lstlisting}
+
+The installation process will automatically create the bindings for the terminal commands, if pip is being executed with super used permissions.\par
+
+% Hier sollte ich einfach aufzählen, wie man die Sachen benutzen kann
+Currently, the following commands are supported by the \textit{PhantomCLI} package:

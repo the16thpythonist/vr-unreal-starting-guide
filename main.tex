@@ -1,0 +1,179 @@
+\documentclass{include/thesisclass}
+% Main File - Based on thesisclass.cls
+% Comments are mostly in English
+% ------------------------------------------------------------------------------
+% Further files in folder:
+%  - include/cmds.tex (for macros and additional commands)
+%  - include/kitlogo.pdf (for titlepage)
+%  - lit.bib (bibtex bibliography database)
+%  - include/titlepage.tex (for layout of titelpage)
+% ------------------------------------------------------------------------------
+% Useful Supplied Packages:
+% amsmath, amssymb, mathtools, bbm, upgreek, nicefrac,
+% siunitx, varioref, booktabs, graphicx, tikz, multicol
+
+%% -------------------------
+%% |    Thesis Settings    |
+%% -------------------------
+% english or ngerman (new german für neue deutsche Rechtschreibung statt german)
+\SelectLanguage{english}
+
+% -----------------------
+% DETAILS OF THE DOCUMENT
+% -----------------------
+\newcommand{\thesisauthor}{Jonas Teufel}
+\newcommand{\thesistopic}{-}
+\newcommand{\thesisentopic}{A Guide for future VR development at the IPE with the unreal engines}
+\newcommand{\thesislongtopic}{Very long and very detailed description of the very interesting thesis topic (only necessary for pdfsubject tag).}
+\newcommand{\thesisinstitute}{Institut für Prozessdatenverarbeitung \\
+und Elektronik}
+\newcommand{\thesisreviewerone}{Andreas Kopmann}
+\newcommand{\thesisreviewertwo}{Prof. Dr. E. Vil}
+\newcommand{\thesisadvisorone}{} % to use: enter names and uncomment in titlepg
+\newcommand{\thesisadvisortwo}{}
+\newcommand{\thesistimestart}{01.04.2015} % on titlepage
+\newcommand{\thesistimeend}{30.09.2015} % on titlepage
+\newcommand{\thesistimehandin}{30.09.2015} % on second page 'preamble'
+\newcommand{\thesispagehead}{Internship report: UCAPhantom Plugin} % page heading
+
+%% ---------------------
+%% |    PDF - Setup    |
+%% ---------------------
+% This information will appear embed into the PDF file as meta data, but will 
+% not be printed anywhere
+\hypersetup
+{
+    pdfauthor={\thesisauthor},
+    pdftitle={Internship report: \thesistopic},
+    pdfsubject={\thesislongtopic},
+    pdfkeywords={kit,ipe,bachelor,internship,phantom camera,libuca,\thesisauthor}
+}
+
+%% --------------------------------------
+%% |    Settings for Word Separation    |
+%% --------------------------------------
+% Help for separation:
+% In German package the following hints are additionally available:
+% "- = Additional separation
+% "| = Suppress ligation and possible separation (e.g. Schaf"|fell)
+% "~ = Hyphenation without separation (e.g. bergauf und "~ab)
+% "= = Hyphenation with separation before and after
+% "" = Separation without a hyphenation (e.g. und/""oder)
+
+% Describe separation hints here:
+\hyphenation
+{
+    über-nom-me-nen an-ge-ge-be-nen
+    %Pro-to-koll-in-stan-zen
+    %Ma-na-ge-ment  Netz-werk-ele-men-ten
+    %Netz-werk Netz-werk-re-ser-vie-rung
+    %Netz-werk-adap-ter Fein-ju-stier-ung
+    %Da-ten-strom-spe-zi-fi-ka-tion Pa-ket-rumpf
+    %Kon-troll-in-stanz
+}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=none,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\lstset{frame=none,
+  language=C,
+  aboveskip=4mm,
+  belowskip=2mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+
+%% -----------------------
+%% |    Main Document    |
+%% -----------------------
+\usepackage{lipsum} % for Lorem Ipsum text example
+
+
+\begin{document}
+    % Titlepage and ToC
+    \FrontMatter
+
+    \input{include/titlepage}
+    \input{include/preamble}
+
+    \begingroup \let\clearpage\relax    % in order to avoid listoffigures and
+    \tableofcontents                    % listoftables on new pages
+    \listoffigures
+    \listoftables
+    \endgroup
+    \cleardoublepage
+    
+    % Contents
+    \MainMatter
+
+    \chapter{Introduction}
+    \input{./chap/chapter1.tex}
+    %\chapter{Background}
+    %\input{./chap/chapter2.tex}
+    %\chapter{PhantomCLI - Investigating the phantom protocol}
+    %\input{./chap/chapter3.tex}
+    %\chapter{UCAPhantom - A Libuca plugin}
+    %\input{./chap/chapter4.tex}
+    
+    % Honestly maybe I am not even doing this chapter.
+	%\chapter{Commisioning of the camera}
+	%\input{./chap/chapter5.tex}
+    %\emptychapter[3]{ROOT Routines}     % usage: \emptychapter[page displayed 
+                                        %        in toc]{name of the chapter}
+    %\chapter{Conclusions}
+    %\input{./chap/chapter6.tex}
+	
+	\chapter*{Changelog}	
+	\input{./chap/changelog.tex}	
+	
+    % appendix for more or less interesting calculations
+    \Appendix
+    \chapter*{\appendixname} \addcontentsline{toc}{chapter}{\appendixname}
+    % to make the appendix appear in ToC without number. \appendixname = 
+    % Appendix or Anhang (depending on chosen language)
+    \input{./chap/appendix.tex} %\cleardoublepage
+
+    % Bibliography
+    \TheBibliography
+
+    % BIBTEX
+    % use if you want citations to appear even if they are not referenced to: 
+    % \nocite{*} or maybe \nocite{Kon64,And59} for specific entries
+    %\nocite{*}
+    \bibliographystyle{babalpha}
+    
+    \bibliography{lit}
+
+    % THEBIBLIOGRAPHY
+    %\begin{thebibliography}{000}
+    %    \bibitem{ident}Entry into Bibliography.
+    %\end{thebibliography}
+\end{document}

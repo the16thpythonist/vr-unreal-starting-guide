@@ -1,0 +1,64 @@
+\section{Summary}
+
+% What do I even want to say about it?
+% - Programming the cli was a very good, way to get to know the 
+% camera protocol, especially programming the mock, where I tried 
+% to reverse engineer the cameras inner workings
+% - The mock really helped the development process, as some of the 
+% testing did not have to be done with the camera fully set up.
+% - A quick out of the box tool to test the most common operations 
+% with the camera, which does neither rely on using the telnet 
+% connection and memorizing the protocol or compiling the whole 
+% libuca pipeling
+\subsection{PhantomCLI command line tools}
+
+The PhantomCLI\footnote{Available at \url{https://github.com/the16thpythonist/phantom-cli}} package provides simple command line tools to perform basic interactions with the phantom camera. Furthermore a simple camera mock simulation was implemented, which will emulate certain camera behaviours on a local machine.\\
+First of all implementing these command line programs was very helpful to understand the PH16 camera protocol a lot better. Using a high level programming language such as Python enabled much more rapid exploratory approach for working with the camera, than the direct low-level implementation in C would have provided. Among all the functionalities of the PhantomCLI package, the mock was most helpful to understand the inner workings of the camera. By attempting to emulate camera behaviour, I was able to gain a lot of insights. Among the most important insights were the concrete structures of the transfer encodings and their packing into the raw ethernet frames, which was not fully clear by protocol description alone.\\
+Beyond the learning, experience the PhantomCLI package provides a handy tool for working with the camera. The mock script provided the possibility to test certain features of the uca-phantom plugin without having to have access to the full camera setup. The getter and setter commands were useful to check and adjust camera settings on the go. The command line tools even provide functionality, which the final LibUCA plugin does not. It is advised to use the PhantomCLI utilities to change the \textit{binning mode} of the camera, as the required restart would not be handled well by the plugin.
+
+% What do I even want to say about it?
+% - It does what it is supposed to do:
+%	- The trigger modes are implemeted
+%	- It has a non-memread mode for viewing current frames
+%	- It has memread mode for read out of large image chunks
+% - It matches the speed requirement using the 10G line way better 
+% than the shitty 1G transmission.
+% - It works with concert
+\subsection{UcaPhantom plugin}
+
+The UcaPhantom\footnote{Available at \url{https://github.com/the16thpythonist/uca-phantom}} package is a plugin for the UCA Library. It is an interfacing application, which connects the phantom line of ultra fast cameras with the UCA library, which is being used for tomography experiments at the KIT.\\
+The plugin implements the required functions of a LibUCA extension: The start and end of a recording, the readout of frames and different trigger modes to start an image acquisition. Above the basic requirements the plugin implements the \textit{memread} mode, which utilizes the 10G connectivity provided by the phantom camera. The memread mode features fast reception of raw ethernet frames and decoding to provide a transmission speed of roughly $600 \frac{\text{MB}}{\text{s}}$.
+
+% So what are the things, that are still ugly?
+
+% PhantomCLI
+% - The mock is far away from being an accurate representation 
+% of the camera. What would be needed is a sort of internal 
+% representation of camera state, as opposed to an input output 
+% maschine right now.
+% - The currently implemented features only are a small subset of 
+% all the possible commands
+
+% UcaPhantom
+% - A lot of utility features are missing. Like fancy schmancy 
+% filter and delay settings for the external trigger or 
+% configuration of the axuliary ports
+% - Changing modes is not implemented and pretty much a pain. 
+% This has to be done using the phantomCLI and then a restart
+% - Error handling system is still not as good as it could be. 
+% Doing things in slightly the wrong order etc. would crash the 
+% program. It is not really robust.
+% Integration testing with 
+% - There are not tests, that confirm it working with another 
+% phantom camera, while in theory it should work with every 
+% camera that implements Visio researches new protocol PH16
+\section{Future work}
+
+For both the PhantomCLI command line tools as well as the UcaPhantom plugin future improvements could be made.\par 
+
+The PhantomCLI package currently only implements a small subset of PH16 protocol used to communicate with the phantom camera. It would be possible to implement more detailed and specific configuration commands as well as the reception of timestamp data for example.\\
+The mock would also be a good aspect for future improvements. Currently the mock is running in its own process, but it is more of a input-output system, than an actual simulation. It does maintain an internal state of the camera with most of its properties, but this is only static. The properties dont have an effect on the actual functionality on the return of an image for example. To build a more functional mock, it would be required to implement a dynamic internal model of the camera, which reacts to state changes and which is also able to start a recording with an internal frame buffer for example.\par 
+
+Like the PhantomCLI package, the UcaPhantom plugin also only implements the most important subset of the PH16 protocol functionality. Here Functions such as the retrieval of timestamps or the in-application configuration of auxiliary ports could be implemented.\\
+Another issue is that the software implementation is not as robust as it could be. The application will sometimes crash, when it is used beyond its intended use cases. In these cases catching the error and displaying a warning message might me appropriate.\\
+Due to the lack of another phantom camera model during development, it is unclear whether the application works with other models as well. While the application should work with all newer models utilizing the PH16 protocol, it would be good to confirm this with actual tests.

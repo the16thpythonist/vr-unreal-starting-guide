@@ -1,0 +1,157 @@
+% So this is supposed to be the section, where I explain how TCP and ethernet frames work
+\section{Computer Networking}
+
+\subsection{Reference models}
+
+Communication between computer systems is achieved through the exchange of messages. For computers specifically these messages will be represented as a series of bits. But receiving an arbitrary series of bits from another maschine cannot be called communication. For a successful transmission of information, the receiving end needs to be able to make sense of these bits.\\
+Transmitter and Receiver define a common protocol, which essentially defines what kind of information is sent at what position within the message.\\
+Due to the complexity of computer networks, the communication within these is divided into multiple layers within a so called reference model. Each layer attempts to deal with a specific aspect of the communication process. These layers build upon the interfaces of the layers below them, create a new level of abstraction to then provide a higher-level interface to be used by those layers above them.\\
+There are multiple reference models, but among the most popular ones is the hybrid reference model, which differentiates between 5 layers:\cite{ComputerNetworks}
+\setlength{\fboxsep}{10pt}%
+\setlength{\fboxrule}{0pt}%
+\begin{figure}[h]
+\centering
+\fbox{\includegraphics[width=0.8\textwidth]{./img/hybrid_reference_model.png}}
+\caption[The hybrid reference model]{The hyprid reference model}
+\end{figure}
+
+\begin{description}
+\item[physical layer] As the lowest layer, it is responsible for the transmission of the individual bits. Since physical media are not discrete, it is the job of the transport layer protocols to define the modulations of the one and zero state into physical signals, which are being sent over the channel. On the receiving end those signals are being transformed back into a stream of bits. Examples for such modulations would be the usage of different voltages in cables or electro-magnetic waves of different frequencies to represent the binary states.
+\item[data link layer] If errors occur during the transmission of the bit sequences, it is the data link layer's responsibility to detect and optionally correct these errors. Within the sender the data link layer packs the messages into \textit{frames}. On the receiving end, the protocol recognizes these frames within the bit stream of the physical layer. The delivery of those frames to the correct recipient requires the physical addresses of the target devices, the MAC addresses.\\
+The frames of the data link layer can only be exchanged between directly physically connected machines.
+\item[network layer] Most of the desired communication within computer networks goes beyond just physically connected machines. This wider scope of connected machines forms a logical network.\\
+It is the network layer's task to forward packets within these logical network, over the borders of individual physical network segments.\\
+For this a logical address (IP address) is defined.
+\item[transport layer] The network layer ensures, that messages are routed from the sender to the correct receiver within a logical network. The transport layer enables communication of two individual processes or programs on those machines.\\
+In this layer the running processes are identified by port numbers. So a process sending data to another process on another machine would have to supply the logical address of the target machine and the port number to which the target process is bound on that machine.
+\item[application layer] The application layer is formed by all protocols, that interact directly with the application programs.\\
+An example would be the HTTP protocol, which is used to view websites within a web browser. 
+\end{description}
+
+\subsection{Ethernet frames}
+\label{sec:eth}
+
+It is the protocols of the data link layer, that make sense of the bit stream of the physical layer. For this purpose, they define \textit{frames}. These frames define special bit sequences for the beginning and the end of a frame. Consequently machines listening on the network can recognize and identify individual frames. The frames make up logical units, which contain the addresses of sender and recipient, actual message data and additional error correction code.\par 
+
+Ethernet frames are a protocol of the data link layer within the hybrid reference model. As the name suggests, it is used when transmitting messages in ethernet networks.\\
+The protocol roughly consists of the following parts: A \textit{preamble}, which consists of 7 bytes. It is used to signify the start of a new frame. Next up it consist of the MAC address of the message destination and the message source, which make up 12 byte in total. Then there are 2 bytes for the \textit{type}. These two bytes are characteristic for a protocol of the upper layers, which use this frame to transport their messages. Every protocol is identified by their own byte sequence. The actual transmitted data is called the \textit{payload}. The payload can make up to 1500 bytes. Also, there are 4 bytes of \textit{CRC checksum}, which is used for error detection.\\
+After the transmission of a frame there will be 12 bytes worth of \textit{interframe spacing}. These bytes are left empty to avoid interframe interference.\cite{ComputerNetworks}
+
+\setlength{\fboxsep}{0pt}%
+\setlength{\fboxrule}{0pt}%
+\begin{figure}[h]
+\centering
+\fbox{\includegraphics[width=\textwidth]{./img/ethernet_frame.png}}
+\caption[Architecture of an ethernet frame]{Architecture of an ethernet frame (simplified)}
+\end{figure}
+
+\subsection{TCP}
+\label{sec:tcp}
+
+The data link layer layers provides the possibility to transmit data from one physical machine to another. The network layer extends the "range" of transmission from physical networks to logical ones. By using the logical IP addresses and global routing infrastructure, data packets can be sent around the globe.\\
+For some applications this might already be enough. But for many it also is not.\par 
+
+The \textit{transmission control protocol (TCP)} is a protocol of the transport layer within the hybrid reference model. It builds upon the possibilities of the network layer. It extends the network layer with a much desired reliabality: It is guaranteed, that data segments reach their destination fully intact and in the correct order. The sender also automatically sends lost or unacknowledged TCP segments again.\\
+From a top level perspective TCP connections can be opened and closed much like a file. Data that is being pushed into the connection is treated as an ordered data stream. This stream of data is potentially very long. Most likely longer than the maximum payload size of the data link layer. Thus the data is split into segments, which will be sent individually.\\
+As part of the protocol, TCP appends its own header data in front of the segment data. The TCP header is in total 20 bytes long and consists of the following core information: The IP address of the sender and the receiver, a protocol ID, the length of the segment, the port number of the application on sender and receiver side, the sequence number, the acknowledge number a checksum and the flags for SYN, ACK and FIN.
+\cite{ComputerNetworks}
+
+\setlength{\fboxsep}{2pt}%
+\setlength{\fboxrule}{0pt}%
+\begin{figure}[h]
+\centering
+\fbox{\includegraphics[width=0.8\textwidth]{./img/tcp_header.png}}
+\caption[Structure of a TCP header]{Structure of a TCP header. Important parts highlighted in green}
+\end{figure}
+
+% here I sort of go into the dynamic functioning of the TCP protocol
+% Here I just sort of introduce the concepts, but dont flesh them out yet.
+The sequence number, abbreviated as "seq" and the acknowledgment number, abbreviated as "ack" are most important to the direct function of the TCP protocol.\\
+The seq number represents the index of the current packets first payload byte within the broader scope of the complete data stream. The ack number signifies what data has been received by the other side. It will be set to the index within the global scope of the communication, which will be expected next.\par 
+
+When establishing a connection the client sends a TCP packet to the server. For this package the \textit{SYN (synchronize)} flag is set. Additionally the seq number of this packet is set to the beginning of the global data stream, which we assume to be zero \footnote{We only \textit{assume} it to be zero here for simplicity. In reality the protocol uses a randomly determined starting number}, since this is were the transmission of global data starts. We will call the seq number for data from the client to the server "$x$".\\
+The server replies with a packet, which has both the SYN and the \textit{ACK (acknowledgement)} flag set. The ACK flag signifies to the client, that the server is willing to initiate a communication channel. The ack number of this reply packet will be set to $x+1$. It points to the index of the next expected data batch. We will also assume, that the seq number for this packet will be set to zero, to indicate the start of the data stream from server to client. This second sequence number will be called "$y$".\\
+The client yet again replies with a packet, which has only the ACK flag set, implying that the synchronization has been finished and the established connection is also confirmed by the client. This third package now has the sequence number $x+1$, which is expected by the server. It also declares $y+1$ as its ack number, as that is the next expected index within the server-to-client data stream.\\
+This process of establishing a TCP connection is also known as the \textit{three way handshake}.\par
+
+\setlength{\fboxsep}{2pt}%
+\setlength{\fboxrule}{0pt}%
+\begin{figure}[h]
+\centering
+\fbox{\includegraphics[width=0.9\textwidth]{./img/tcp_connection.png}}
+\caption[Structure of a TCP connection]{Basic initialization process of a TCP connection with the three way handshake and data transmission process}
+\end{figure}
+
+As it became obvious, data can be transmitted from the client to the server as well as vice versa. The seq number denotes the current index of the two directional data streams. The ack number is a representation of either sides expectation of which seq number they have to expect within the next received packet.\\
+Keeping a record of the actual position within the data stream as well as the expectation of the next data enables the detection of data loss: The ack number acts as a confirmation of what has actually been received on the other end of the channel. does the ack number of the server reply for example not match the seq number of the next client packet, it is likely, that the previous packet never made it to the server.  In such a case the TCP protocol will send the lost package again and resume afterwards, without bothering the application layers perceived functionality of the TCP channel.\\
+Additionally the sequence numbers will guarantee, that data segments are received in the correct order, as well as duplicates being recognized\footnote{Packets being lost, duplicated or received out of order happens quite often on a network layer level. This is due to the complex routing infrastructure involved in sending packets over multiple  physical networks}.\cite{ComputerNetworks}
+
+\section{SIMD Instruction Sets}
+\label{sec:simd}
+
+Many modern processor architectures support so called \textit{single-insturction multiple-data (SIMD) Instructions sets}. A SIMD-capable processor includes computational ressources that leverage concurrent calculations using multiple data values. These inherently concurrent instructions have a major performance advantage compared with traditional instructions.\cite{ModernAssembly}\\
+Many modern "high-level" programming languages are not yet able to utilize SIMD instructions properly. This can be due to the very specific instructions being hard to implement into high level concepts such as object orientation. Another reason might be to maintain a general device support. New instruction sets are being introduced continually. These additional instructions are very architecture specific and are only supported by specific processor models. On older machines a newer standard of these instructions will not be supported, breaking backwards compatibility for some applications.\par 
+
+For the C programming language there is a concept called \textit{intrinsics}. Usually functions are stored in libraries, but some functions are built into the compiler itself. These functions are called \textit{intrinsic} functions. For such a function the code, which describes this function is usually inserted inline by the compiler, thus removing the overhead of an actual function call. Additionally, the compiler often has knowledge of the inner working of these functions. This enables the compilers optimizer to make inline functions to perform even better than inline assembly code.\cite{CompilerIntrinsics}\\
+With the C language many of these SIMD instructions are being implemented as intrinsic functions. This enables to take full advantage of the improved performance these new instructions provide. A full reference of these intrinsics, their parameters and usage can be found in \cite{IntelIntrinsicsGuide}
+
+\section{X-Ray Tomography}
+
+% Also hier sollte ich ein bisschen einen Überblick über die theoretischen Grundlagen
+% geben, weshalb ich das alles hier überhaupt mache. Also erklären inwiefern man 
+% durch x ray tomography überhaupt einen Aufschluss über die interne Strukur eines 
+% Objektes bekommt
+
+% Aber um erhrlich zu sein ist der Teil nicht allzu wichtig
+
+lul
+
+\section{The Phantom Camera model v2640}
+
+% Ein Bild von der phantom camera. Nur damit der Leser sich mal ein Bild davon machen 
+% kann wie solche high speed cameras denn aussehen.
+\begin{figure}[h]
+	\caption[Phantom models v1840 and v2640]{The phantom camera models v1840 and v2640 \footnotemark}
+	\includegraphics[width=\linewidth]{../img/phantom_image.png} 
+	\label{fig:phantom1}
+\end{figure}
+\footnotetext{image source: \url{https://www.phantomhighspeed.com/-/media/project/ameteksxa/visionresearch/images/product/uhs/v18n26combo.png}(accessed 2019-07-18)}
+
+% Hier sollte ich die Specs der Kamera aufzählen
+The Phantom Camera v2640 is one of the newest additions to the ultra-high-speed imaging family of Vision Research. Its core features are \cite{PhantomDatasheet}:
+\begin{itemize}
+\item A 4Mpx sensor, enabling frames with a maximum resolution of 2048 x 1952 at a bit depth of 12 bit.
+
+\item Various available modes, which include standard, high-speed and binned frame acquisition. The high-speed-binned mode features a maximum frame rate of 25030 FPS at a resolution of 1024 x 976 pixels 
+
+\item Up to 288GB of internal RAM memory, which can be partitioned into up to 63 cines\footnote{A \textit{Cine} is a custom storage data format for a recording of multiple cines developed by Vision Research. It is used internally in phantom cameras to organize multiple recordings without overriding previous ones.}. The record duration is even more extendable through the use of the Phantom CineMag \texttrademark (1TB and 2TB available) \footnote{The CineMag is an additional storage device, which can be inserted into the camera to extend the internal memory}
+
+\item A low noise of 7.2 e- and a high dynamic range of 64dB
+
+\item Multiple I/O Ports. Among those are 4 Programmable I/O ports. Possible configurations include the usage of an external trigger source, a memory gate function \footnote{The \textit{memgate} function will block the saving of frames into the internal as long as the supplied pulse is LOW/HIGH (configurable). This enables to time the acquisition of frames exactly with the duration of the process to be observed}, frame sync signal and more. The camera also contains 1GB and 10GB ethernet ports for control signals and data transmission. The 10GB ethernet connection can transmit up to 600MB/s of image data, \textit{on optimized systems}.
+\end{itemize}
+
+\section{The LibUCA Framework}
+
+The Unified Camera Abstraction Library, or LibUCA in short, is one building block of the UFO framework. The UFO framework was developed to provide "A Scalable Platform for High Speed Synchrotron Imaging". The platform features the handling of the full imaging process from the actual recording to processing and long term data storage.\cite{UFOPaper}\par
+LibUCA in particular exposes a light-weight API interface to the UFO core, which enables to abstract common camera operations such as recording triggering and reading out the internal memory. This abstraction allows almost any camera to be integrated into the UFO-workflow, as long as an additional UCA-plugin is developed.  These plugins have to communicate with the camera and expose the result of this communication to the common entry points of the LibUCA library.\\
+
+% Ein Bild welches die Architektur von libuca verdeutlicht
+\begin{figure}[h]
+	\caption[LibUCA architecture]{LibUCA architecture overview \footnotemark}
+	\includegraphics[width=\linewidth]{../img/libuca_architecture.png} 
+	\label{fig:phantom1}
+\end{figure}
+\footnotetext{image source: \url{https://libuca.readthedocs.io/en/latest/_images/architecture.png}(accessed 2019-07-18)}
+
+LibUCA itself is implemented in the C programming language and the Glib\footnote{\textit{Glib} is a C library, which aims to provide advanced programming concepts to the relatively basic C programming language. Glib eases the use of object oriented programming, although not naturally supported by C. It also simplifies handling of strings, files, threads and more.} library.[CITATION GITHUB] As such plugins have to be developed as C as well. Through the use of the object oriented paradigms provided by GLib, this can be achieved by subclassing the basic \texttt{UcaCamera} class. For a minimal implementation of a plugin, the following virtual methods have to be overriden with custom code:\cite{LibucaDoc}
+
+\begin{itemize}
+\item \texttt{start\_recording}: This method has to make all necessary preparations so that every subsequent call to the \texttt{grab} method returns an image array.
+
+\item \texttt{stop\_recording}: Stops the recording so that subsequent calls to the grab method fail.
+
+\item \texttt{grab}: Has to return an image in the form of an array, where each pixel is represented by a 16 bit integer value.
+\end{itemize}
+
+
