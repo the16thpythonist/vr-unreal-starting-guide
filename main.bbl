@@ -1,4 +1,4 @@
-\begin{thebibliography}{{Vog}14}
+\begin{thebibliography}{Unr}
   \providebibliographyfont{name}{}%
   \providebibliographyfont{lastname}{}%
   \providebibliographyfont{title}{\emph}%
@@ -13,92 +13,10 @@
   \expandafter\btxselectlanguage\expandafter {\btxfallbacklanguage}
 
 \btxselectlanguage {english}
-\bibitem [{Bau19}]{ComputerNetworks}
-\btxnamefont {\btxlastnamefont {Baun}, Christian}\btxauthorcolon\
-  \btxpublisherfont {\btxtitlefont {{Computer Networks / Computernetze:
-  Bilingual Edition: English \textendash{} German / Zweisprachige Ausgabe:
-  Englisch \textendash{} Deutsch / von Christian Baun}}}.
-\newblock 2019\ifbtxprintISBN {, \mbox{\btxISBN~\btxISBNfont
-  {978-3-658-26356-0}}}.
-
-\bibitem [{BC}]{packetmmap}
-\btxnamefont {\btxlastnamefont {Baudy}, Johann} \btxandlong {}\ \btxnamefont
-  {Ulisses\btxfnamespacelong Alonso \btxlastnamefont
-  {Camar{\'o}}}\btxauthorcolon\ \btxtitlefont {\btxifchangecase {Linux {{Kernel
-  Documentation}} :: Networking : Packet\_mmap.txt}{Linux {{Kernel
-  Documentation}} :: Networking : Packet\_mmap.Txt}}.
+\bibitem [{Unr}]{UnrealEngineSpecs}
+\btxtitlefont {\btxifchangecase {Hardware and {{Software
+  Specifications}}}{Hardware and {{Software Specifications}}}}.
 \newblock
-  https://www.mjmwired.net/kernel/Documentation/networking/packet\_mmap.txt.
-
-\bibitem [{{IBP}19}]{IBPT1}
-\btxnamefont {\btxlastnamefont {{IBPT - Institute for Beam Physics and
-  Technology}}}\btxauthorcolon\ \btxtitlefont {\btxifchangecase
-  {{{Accelerator}}}{{{Accelerator}}}}.
-\newblock \url{http://www.ibpt.kit.edu/1712.php},
-  \btxprintmonthyear{.}{7}{2019}{long}.
-
-\bibitem [{{Int}}]{IntelIntrinsicsGuide}
-\btxnamefont {\btxlastnamefont {{Intel}}}\btxauthorcolon\ \btxtitlefont
-  {\btxifchangecase {{{Intel}}\textregistered{} {{Intrinsics
-  Guide}}}{{{Intel}}\textregistered{} {{Intrinsics Guide}}}}.
-\newblock https://software.intel.com/sites/landingpage/IntrinsicsGuide/\#.
-
-\bibitem [{{IPS}17}]{TopoTomoBeamline2017}
-\btxnamefont {\btxlastnamefont {{IPS - Institute for Photon Science {and}
-  Synchrotron Radiation}}}\btxauthorcolon\ \btxtitlefont {\btxifchangecase
-  {{{Topo Tomo Beamline}}}{{{Topo Tomo Beamline}}}}.
-\newblock \url{http://www.ips.kit.edu/5927.php},
-  \btxprintmonthyear{.}{6}{2017}{long}.
-
-\bibitem [{Kus14}]{ModernAssembly}
-\btxnamefont {\btxlastnamefont {Kusswurm}, Daniel}\btxauthorcolon\
-  \btxpublisherfont {\btxtitlefont {Modern {{X86 Assembly Language
-  Programming}}: 32-Bit, 64-Bit, {{SSE}}, and {{AVX}} / by {{Daniel
-  Kusswurm}}}}.
-\newblock 2014\ifbtxprintISBN {, \mbox{\btxISBN~\btxISBNfont
-  {978-1-4842-0064-3}}}.
-
-\bibitem [{{Mic}}]{CompilerIntrinsics}
-\btxnamefont {\btxlastnamefont {{Microsoft}}}\btxauthorcolon\ \btxtitlefont
-  {\btxifchangecase {Compiler intrinsics}{Compiler Intrinsics}}.
-\newblock https://docs.microsoft.com/en-us/cpp/intrinsics/compiler-intrinsics.
-
-\expandafter\btxselectlanguage\expandafter {\btxfallbacklanguage}
-\bibitem [{RV14}]{PH16Protocol}
-\btxnamefont {\btxlastnamefont {{Radu Corlan}}} \btxandlong {}\ \btxnamefont
-  {\btxlastnamefont {{Vlad Iordacheseu}}}\btxauthorcolon\ \btxtitlefont
-  {\btxifchangecase {{{PH16}} camera protocol}{{{PH16}} Camera Protocol}},
-  \btxprintmonthyear{.}{2}{2014}{long}.
-
-\bibitem [{VCK12}]{UFOPaper}
-\btxnamefont {\btxlastnamefont {Vogelgesang}, Matthias}, \btxnamefont {Suren
-  \btxlastnamefont {Chilingaryan}}\btxandcomma {} \btxandlong {}\ \btxnamefont
-  {Andreas \btxlastnamefont {Kopmann}}\btxauthorcolon\ \btxtitlefont
-  {\btxifchangecase {{{UFO}}: {{A Scalable GPU}}-based {{Image Processing
-  Framework}} for {{On}}-line {{Monitoring}}}{{{UFO}}: {{A Scalable GPU}}-Based
-  {{Image Processing Framework}} for {{On}}-Line {{Monitoring}}}}.
-\newblock \Btxinlong {}\ \btxtitlefont {2012 {{IEEE}} 14th {{International
-  Conference}} on {{High Performance Computing}} and {{Communication}} \& 2012
-  {{IEEE}} 9th {{International Conference}} on {{Embedded Software}} and
-  {{Systems}}}, \btxpageslong {}\ 824--829, {Liverpool, United Kingdom},
-  \btxprintmonthyear{.}{6}{2012}{long}. \btxpublisherfont
-  {{IEEE}}\ifbtxprintISBN {, \mbox{\btxISBN~\btxISBNfont {978-1-4673-2164-8
-  978-0-7695-4749-7}}}.
-
-\bibitem [{{Vis}18}]{PhantomManual}
-\btxnamefont {\btxlastnamefont {{Vision Research}}}\btxauthorcolon\
-  \btxtitlefont {\btxifchangecase {{{UHS Series Manual}}}{{{UHS Series
-  Manual}}}}, \btxprintmonthyear{.}{11}{2018}{long}.
-
-\bibitem [{{Vis}19}]{PhantomDatasheet}
-\btxnamefont {\btxlastnamefont {{Vision Research}}}\btxauthorcolon\
-  \btxtitlefont {\btxifchangecase {Phantom v1840 / v2640 {{Datasheet}}}{Phantom
-  V1840 / V2640 {{Datasheet}}}}, \btxprintmonthyear{.}{4}{2019}{long}.
-
-\bibitem [{{Vog}14}]{LibucaDoc}
-\btxnamefont {\btxlastnamefont {{Vogelgesang, Matthias}}}\btxauthorcolon\
-  \btxtitlefont {\btxifchangecase {Welcome \textemdash{} libuca 2.3.0
-  documentation}{Welcome \textemdash{} Libuca 2.3.0 Documentation}}.
-\newblock \url{https://libuca.readthedocs.io/en/latest/index.html}, 2014.
+  https://docs.unrealengine.com/en-US/GettingStarted/RecommendedSpecifications/index.html.
 
 \end{thebibliography}
