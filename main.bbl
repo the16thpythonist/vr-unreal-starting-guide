@@ -1,4 +1,4 @@
-\begin{thebibliography}{Unr}
+\begin{thebibliography}{{Web}19}
   \providebibliographyfont{name}{}%
   \providebibliographyfont{lastname}{}%
   \providebibliographyfont{title}{\emph}%
@@ -17,6 +17,13 @@
 \btxtitlefont {\btxifchangecase {Hardware and {{Software
   Specifications}}}{Hardware and {{Software Specifications}}}}.
 \newblock
-  https://docs.unrealengine.com/en-US/GettingStarted/RecommendedSpecifications/index.html.
+  \url{https://docs.unrealengine.com/en-US/GettingStarted/RecommendedSpecifications/index.html}.
+
+\bibitem [{{Web}19}]{KitBib}
+\btxnamefont {\btxlastnamefont {{Webredaktion der
+  KIT-Bibliothek}}}\btxauthorcolon\ \btxtitlefont {\btxifchangecase
+  {{KIT-Bibliothek}}{{KIT-Bibliothek}}}.
+\newblock \url{https://www.bibliothek.kit.edu/cms/index.php},
+  \btxprintmonthyear{.}{9}{2019}{long}.
 
 \end{thebibliography}
