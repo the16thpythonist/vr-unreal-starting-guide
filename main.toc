@@ -6,10 +6,24 @@
 \contentsline {chapter}{\numberline {2}First steps}{3}{chapter.2}
 \contentsline {section}{\numberline {2.1}Installing the development environment}{3}{section.2.1}
 \contentsline {subsection}{\numberline {2.1.1}Unreal engine requirements}{3}{subsection.2.1.1}
-\contentsline {paragraph}{\nonumberline 0.0.0 - 18.11.2019}{5}{section*.9}
-\contentsline {chapter}{Appendix}{7}{chapter*.10}
-\contentsline {section}{\numberline {A}First Appendix Section}{7}{section.Alph0.1}
-\contentsline {chapter}{Bibliography}{9}{chapter*.11}
+\contentsline {section}{\numberline {2.2}Installing the unreal engine}{4}{section.2.2}
+\contentsline {section}{\numberline {2.3}Additional programs}{4}{section.2.3}
+\contentsline {section}{\numberline {2.4}Installing Blender}{4}{section.2.4}
+\contentsline {chapter}{\numberline {3}Design Choices}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}The scope of the project}{5}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}basic considerations}{5}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}example 1}{5}{subsection.3.1.2}
+\contentsline {section}{\numberline {3.2}VR specific design choices}{6}{section.3.2}
+\contentsline {subsection}{\numberline {3.2.1}Why VR?}{6}{subsection.3.2.1}
+\contentsline {subsection}{\numberline {3.2.2}The method of locomotion}{7}{subsection.3.2.2}
+\contentsline {chapter}{\numberline {4}Literature}{9}{chapter.4}
+\contentsline {chapter}{\numberline {5}Tutorials}{11}{chapter.5}
+\contentsline {paragraph}{\nonumberline 0.0.0 - 18.11.2019}{13}{section*.9}
+\contentsline {paragraph}{\nonumberline 0.0.1 - 19.11.2019}{13}{section*.10}
+\contentsline {paragraph}{\nonumberline 0.0.2 - 21.11.2019}{13}{section*.11}
+\contentsline {chapter}{Appendix}{15}{chapter*.12}
+\contentsline {section}{\numberline {A}First Appendix Section}{15}{section.Alph0.1}
+\contentsline {chapter}{Bibliography}{17}{chapter*.13}
 \babel@toc {ngerman}{}
 \babel@toc {english}{}
 \babel@toc {ngerman}{}
