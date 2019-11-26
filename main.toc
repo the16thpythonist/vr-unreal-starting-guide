@@ -18,14 +18,19 @@
 \contentsline {subsection}{\numberline {3.2.2}The method of locomotion}{7}{subsection.3.2.2}
 \contentsline {chapter}{\numberline {4}Ressources}{9}{chapter.4}
 \contentsline {section}{\numberline {4.1}chapter overview}{9}{section.4.1}
-\contentsline {section}{\numberline {4.2}Book "Unreal for Mobile and Standalone VR"}{9}{section.4.2}
+\contentsline {section}{\numberline {4.2}Book \textit {Unreal for Mobile and Standalone VR}}{9}{section.4.2}
+\contentsline {paragraph}{\nonumberline Chapter 3: Before you start}{9}{section*.6}
+\contentsline {paragraph}{\nonumberline Chapter 4: Unreal for VR}{9}{section*.7}
+\contentsline {paragraph}{\nonumberline chapter 6: Creating an Interactive VR Presentation}{9}{section*.8}
 \contentsline {chapter}{\numberline {5}Tutorials}{11}{chapter.5}
-\contentsline {paragraph}{\nonumberline 0.0.0 - 18.11.2019}{13}{section*.10}
-\contentsline {paragraph}{\nonumberline 0.0.1 - 19.11.2019}{13}{section*.11}
-\contentsline {paragraph}{\nonumberline 0.0.2 - 21.11.2019}{13}{section*.12}
-\contentsline {chapter}{Appendix}{15}{chapter*.13}
-\contentsline {section}{\numberline {A}First Appendix Section}{15}{section.Alph0.1}
-\contentsline {chapter}{Bibliography}{17}{chapter*.14}
+\contentsline {section}{\numberline {5.1}Setting up the HTC Vive}{11}{section.5.1}
+\contentsline {section}{\numberline {5.2}Fundamentals of Unreal}{11}{section.5.2}
+\contentsline {section}{\numberline {5.3}Using the Sequencer for Animations}{11}{section.5.3}
+\contentsline {paragraph}{\nonumberline 0.0.0 - 18.11.2019}{13}{section*.11}
+\contentsline {paragraph}{\nonumberline 0.0.1 - 19.11.2019}{13}{section*.12}
+\contentsline {paragraph}{\nonumberline 0.0.2 - 21.11.2019}{13}{section*.13}
+\contentsline {paragraph}{\nonumberline 0.0.3 - 22.11.2019}{13}{section*.14}
+\contentsline {chapter}{Bibliography}{15}{chapter*.15}
 \babel@toc {ngerman}{}
 \babel@toc {english}{}
 \babel@toc {ngerman}{}
