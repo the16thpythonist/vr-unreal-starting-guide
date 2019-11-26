@@ -13,6 +13,20 @@
   \expandafter\btxselectlanguage\expandafter {\btxfallbacklanguage}
 
 \btxselectlanguage {english}
+\bibitem [{Fou}]{Blender}
+\btxnamefont {\btxlastnamefont {Foundation}, Blender}\btxauthorcolon\
+  \btxtitlefont {\btxifchangecase {Blender.org - {{Home}} of the {{Blender}}
+  project - {{Free}} and {{Open 3D Creation Software}}}{Blender.Org - {{Home}}
+  of the {{Blender}} Project - {{Free}} and {{Open 3D Creation Software}}}}.
+
+\bibitem [{Hil19}]{MobileVR}
+\btxnamefont {\btxlastnamefont {Hillmann}, Cornel}\btxauthorcolon\
+  \btxpublisherfont {\btxtitlefont {Unreal for {{Mobile}} and {{Standalone
+  VR}}: {{Create Professional VR Apps Without Coding}} / by {{Cornel
+  Hillmann}}}}.
+\newblock 2019\ifbtxprintISBN {, \mbox{\btxISBN~\btxISBNfont
+  {978-1-4842-4360-2}}}.
+
 \bibitem [{Unr}]{UnrealEngineSpecs}
 \btxtitlefont {\btxifchangecase {Hardware and {{Software
   Specifications}}}{Hardware and {{Software Specifications}}}}.

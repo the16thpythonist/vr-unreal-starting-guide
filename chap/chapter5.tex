@@ -6,15 +6,34 @@
 % - Basic Locomotion system
 % + How the sequence works with animations etc.
 
-\section{Setting up the HTC Vive}
+%\section{Setting up the HTC Vive}
 
 % The images for this I will need to add, when I am at the IPE
-How to set up the hardware and the software
+%How to set up the hardware and the software
 
-\section{Fundamentals of Unreal}
+%\section{Fundamentals of Unreal}
 
-Write something about how the engine generally works.
+%Write something about how the engine generally works.
 
-\section{Using the Sequencer for Animations}
+\section{Using the Sequencer for Basic Animations}
 
-I dont know that myself yet.
+\paragraph{Basic Introduction}
+
+Since Version 4.22 the Unreal Engine has been extended with the \textit{Sequencer} Functionality.\\
+Within the editor, objects are being represented by their position, which is their X, Y and Z coordinates. Additionally to their position objects also have \textit{properties}. You can think of a light source for example, one of its properties would be the intensity of the light.\\
+With the sequencer tool you can create new "sequence" objects. With these sequences you can define specific sequences of position and property changes for objects within the game world. What would be an example for this? Imagine a game setting, where there is a closed door in a hallway. As the player walks down the hallway, he will trigger a new Sequence called "DoorSequence" for example. Within this sequence, you have previously defined, that the door will rotate outwards from its angles by 90 degrees, within a time frame of 1 second. Upon triggering the sequence the player will witness the animation of the door opening automatically, until it does not move anymore after 1 second and then remain open.\\
+To summerize: The sequencer tool can be used for simple, world-bound animations. Why only simple animations? The sequencer system is relatively limited to manipulating "only" the position and other properties of \textit{whole} objects. Thus it is not able to for example deform whole objects. But when animating a characters facial expressions for example, what you want to do is to make a series of deformations of the actual model as time progresses. To make these kind of \textit{more dynamic} animations a different functionality of the Unreal Engine has to be used.
+
+\paragraph{Basic concepts of sequences}
+
+The most important concept for working with animations is that of a \textit{keyframe}. Overall you can compare the sequence object with a video: In the end the animation itself is nothing more than a series of still images played rapidly in series. Each one of these still images within a video is called \textit{frame}. As such the different moments during a sequence are also called frame.\\
+Now imagine an example: You simply want to move a red cube from left to right. So what you would do is create a first keyframe at the 0 seconds mark within the sequence, with the cube still being on the left. Then you would create another keyframe at 1 second, with the cube being on the right, where you want it to be at the end. Than you could already play the sequence and see an animation. Now you could ask: "How come, that I see the whole animation? I havent yet defined all the positions of the cube \textit{in between} the start and the end!". This is why sequences are so convenient: You only need to set the \textit{defining moments} or \textit{keyframes} of an animation. The program will \textit{interpolate} all the frames in between those to moments to create a smooth animation.
+
+So in the end working with the sequencer really just comes down to setting the appropriate keyframes and letting the program do the rest
+
+\paragraph{Setting up a Sequence}
+
+Now we are getting to the practical part. First, a quick summary of what has to be done for setting up a new sequence in the Unreal Engine:
+\begin{itemize}
+\item Setting
+\end{itemize}

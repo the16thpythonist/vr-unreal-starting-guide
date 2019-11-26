@@ -23,14 +23,16 @@
 \contentsline {paragraph}{\nonumberline Chapter 4: Unreal for VR}{9}{section*.7}
 \contentsline {paragraph}{\nonumberline chapter 6: Creating an Interactive VR Presentation}{9}{section*.8}
 \contentsline {chapter}{\numberline {5}Tutorials}{11}{chapter.5}
-\contentsline {section}{\numberline {5.1}Setting up the HTC Vive}{11}{section.5.1}
-\contentsline {section}{\numberline {5.2}Fundamentals of Unreal}{11}{section.5.2}
-\contentsline {section}{\numberline {5.3}Using the Sequencer for Animations}{11}{section.5.3}
-\contentsline {paragraph}{\nonumberline 0.0.0 - 18.11.2019}{13}{section*.11}
-\contentsline {paragraph}{\nonumberline 0.0.1 - 19.11.2019}{13}{section*.12}
-\contentsline {paragraph}{\nonumberline 0.0.2 - 21.11.2019}{13}{section*.13}
-\contentsline {paragraph}{\nonumberline 0.0.3 - 22.11.2019}{13}{section*.14}
-\contentsline {chapter}{Bibliography}{15}{chapter*.15}
+\contentsline {section}{\numberline {5.1}Using the Sequencer for Basic Animations}{11}{section.5.1}
+\contentsline {paragraph}{\nonumberline Basic Introduction}{11}{section*.9}
+\contentsline {paragraph}{\nonumberline Basic concepts of sequences}{11}{section*.10}
+\contentsline {paragraph}{\nonumberline Setting up a Sequence}{12}{section*.11}
+\contentsline {paragraph}{\nonumberline 0.0.0 - 18.11.2019}{13}{section*.14}
+\contentsline {paragraph}{\nonumberline 0.0.1 - 19.11.2019}{13}{section*.15}
+\contentsline {paragraph}{\nonumberline 0.0.2 - 21.11.2019}{13}{section*.16}
+\contentsline {paragraph}{\nonumberline 0.0.3 - 22.11.2019}{13}{section*.17}
+\contentsline {paragraph}{\nonumberline 0.0.4 - 26.11.2019}{14}{section*.18}
+\contentsline {chapter}{Bibliography}{15}{chapter*.19}
 \babel@toc {ngerman}{}
 \babel@toc {english}{}
 \babel@toc {ngerman}{}
